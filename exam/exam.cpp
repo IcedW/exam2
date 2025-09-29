@@ -261,7 +261,7 @@ public:
     void run()
     {
         srand(time(0));
-        for (int i = 1; i <= 2; i++) {
+        for (int i = 1; i <= 4; i++) {
             if (i < 5) {
                 cout << "Starting new round\n";
                 Sleep(1000);
