@@ -208,7 +208,7 @@ public:
             cout << "eror\n";
             return;
         }
-        out << "Last game's stats";
+        out << "Last game's stats\n";
         out << "fails: " << fails << "\n";
         out << "good doings: " << successes << "\n";
         out.close();
