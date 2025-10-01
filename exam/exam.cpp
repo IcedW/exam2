@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <string>
 #include <windows.h>
@@ -33,6 +33,7 @@ public:
     {
         numType = numRand(4);
         numInfo = numRand(3) == 0 ? 1 : 0;
+        carType();
     }
     string getType() override {
         return typeStorage;
@@ -112,6 +113,7 @@ public:
     {
         numInfo = numRand(3) == 0 ? 1 : 0;
         numType = numRand(6);
+        carType();
     }
     string getType() override {
         return typeStorage;
@@ -200,19 +202,46 @@ private:
     string filename;
 
 public:
-    saveScore(const string& file = "C:\\Users\\Admin\\Desktop\\gameHS.txt") : filename(file) {}
+    saveScore(const string& file = "BC-Score.txt") : filename(file) {}
 
-    void save(int fails, int successes) {
+    void save(int fails, int success, int hs) {
         ofstream out(filename, ios::out | ios::trunc);
         if (!out.is_open()) {
-            cout << "eror\n";
+            cout << "error saving file\n";
             return;
         }
-        out << "Last game's stats\n";
+        out << "highscore: " << hs << "\n";
+        out << "last_game:\n";
         out << "fails: " << fails << "\n";
-        out << "good doings: " << successes << "\n";
+        out << "good doings: " << success << "\n";
         out.close();
-        cout << "Game Stats Saved\n";
+    }
+    int highScore() {
+        ifstream in(filename);
+        if (!in.is_open()) {
+            return 0;
+        }
+
+        string line;
+        int hs = 0;
+        while (getline(in, line)) {
+            size_t pos = line.find("highscore:");
+            if (pos < line.size()) {
+                pos += 10;
+                while (pos < line.size() && isspace(line[pos])) {
+                    pos++;
+                }
+                hs = 0;
+                while (pos < line.size() && isdigit(line[pos])) {
+                    hs = hs * 10 + (line[pos] - '0');
+                    pos++;
+                }
+                break;
+            }
+        }
+
+        in.close();
+        return hs;
     }
 };
 
@@ -252,7 +281,7 @@ private:
             }
             else {
                 cout << "wrong";
-                Sleep(2);
+                Sleep(750);
                 system("cls");
             }
         }
@@ -270,7 +299,6 @@ public:
 
             cout << "round: " << i << "\n";
             Driver* d = Driver::rngType();
-            d->carType();
             Menu(*d);
             delete d;
         }
@@ -279,7 +307,22 @@ public:
         cout << "good doings:\t" << success << "\n";
 
         saveScore saving;
-        saving.save(fail, success);
+        int hs = saving.highScore();
+
+        if (success > hs) {
+            hs = success;
+        }
+
+        char choice;
+        cout << "save (y/n): ";
+        cin >> choice;
+
+        if (choice == 'y' || choice == 'Y') {
+            saving.save(fail, success, hs);
+        }
+        else {
+            cout << "Score not saved.\n";
+        }
     }
 };
 
