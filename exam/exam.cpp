@@ -9,13 +9,13 @@ using namespace std;
 class Driver
 {
 public:
-    virtual void carType() = 0;
-    virtual void checkInfo() = 0;
-    virtual void checkStuff() = 0;
-    virtual void deportDriver(int& success, int& fail) = 0;
-    virtual void letGo(int& success, int& fail) = 0;
-    virtual string getType() = 0;
-    static Driver* rngType();
+    virtual void carType() = 0; //randomization of the car type (as in what kind of cargo or how many people they can hold)
+    virtual void checkInfo() = 0; //check driver's information to see if they are elligible for entry or have a real driver's license
+    virtual void checkStuff() = 0; //check the inside of the car. For cargo trucks its the inside material, for passager cars its people inside for their entry
+    virtual void deportDriver(int& success, int& fail) = 0; //deport the driver back into the country away from the border
+    virtual void letGo(int& success, int& fail) = 0; //let the driver pass the border
+    virtual string getType() = 0; //the buffer for the carType.
+    static Driver* rngType(); //the buffer for if the car is cargo or passenger
 };
 
 class cargoDriver : public Driver
@@ -186,7 +186,7 @@ public:
     }
 };
 
-Driver* Driver::rngType()
+Driver* Driver::rngType() //randomization of the type of car passing through
 {
     int r = rand() % 2;
     if (r == 0) {
@@ -197,7 +197,7 @@ Driver* Driver::rngType()
     }
 }
 
-class saveScore {
+class saveScore { //the current and highscore saver
 private:
     string filename;
 
@@ -245,7 +245,7 @@ public:
     }
 };
 
-class Game
+class Game //game menu
 {
 private:
     int fail = 0;
@@ -290,7 +290,7 @@ public:
     void run()
     {
         srand(time(0));
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= 4; i++) { //code that allows for multiple rounds
             if (i < 5) {
                 cout << "Starting new round\n";
                 Sleep(1000);
@@ -309,7 +309,7 @@ public:
         saveScore saving;
         int hs = saving.highScore();
 
-        if (success > hs) {
+        if (success > hs) { //saves the highscore if its higher than previously saved score
             hs = success;
         }
 
