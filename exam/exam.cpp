@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <cstdlib>
 #include <ctime>
+#include <list>
+#include <algorithm>
 using namespace std;
 
 class Driver
@@ -250,6 +252,7 @@ class Game //game menu
 private:
     int fail = 0;
     int success = 0;
+    list<Driver*> drivers;
     void Menu(Driver& d)
     {
         while (true) {
@@ -290,17 +293,14 @@ public:
     void run()
     {
         srand(time(0));
-        for (int i = 1; i <= 4; i++) { //code that allows for multiple rounds
-            if (i < 5) {
-                cout << "Starting new round\n";
-                Sleep(1000);
-                system("cls");
-            }
 
-            cout << "round: " << i << "\n";
-            Driver* d = Driver::rngType();
-            Menu(*d);
-            delete d;
+        for (int i = 1; i <= 4; i++) {
+            drivers.push_back(Driver::rngType());
+        }
+        int round = 1;
+        for (auto it = drivers.begin(); it != drivers.end(); ++it, ++round) {
+            cout << "round: " << round << "\n";
+            Menu(**it);
         }
 
         cout << "fails:\t" << fail << "\n";
@@ -309,9 +309,8 @@ public:
         saveScore saving;
         int hs = saving.highScore();
 
-        if (success > hs) { //saves the highscore if its higher than previously saved score
+        if (success > hs)
             hs = success;
-        }
 
         char choice;
         cout << "save (y/n): ";
@@ -323,6 +322,11 @@ public:
         else {
             cout << "Score not saved.\n";
         }
+
+        for_each(drivers.begin(), drivers.end(), [](Driver* d) {
+            delete d;
+            });
+        drivers.clear();
     }
 };
 
